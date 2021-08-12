@@ -4,9 +4,9 @@ import {
   timerStart,
   getTime,
   timerStartCountdown,
-} from "./store/reducers/timer";
-import Board from "@/Board";
-import Timer from "@/Timer";
+} from "@/store/reducers/timer";
+import Board from "@/components/Board";
+import Timer from "@/components/Timer";
 import React from "react";
 
 function BestScore() {

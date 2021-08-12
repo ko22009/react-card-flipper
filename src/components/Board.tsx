@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/reducers";
-import Card from "@/Card";
+import Card from "@/components/Card";
 import React from "react";
 
 const styleBoard = {

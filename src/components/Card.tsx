@@ -1,7 +1,6 @@
 import { CSSProperties } from "react";
 import { ICard } from "@/store/reducers/cards";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/reducers";
+import { useDispatch } from "react-redux";
 import React from "react";
 
 const styleCard = {
