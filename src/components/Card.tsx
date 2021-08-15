@@ -1,7 +1,8 @@
 import { CSSProperties } from "react";
-import { ICard } from "@/store/reducers/cards";
-import { useDispatch } from "react-redux";
+import { cardsFlip, ICard } from "@/store/reducers/cards";
+import { useDispatch, useSelector } from "react-redux";
 import React from "react";
+import { RootState } from "@/store/reducers";
 
 const styleCard = {
   background: "#272773",
@@ -38,22 +39,27 @@ const styleFlip = {
 
 function Card(props: ICard) {
   const dispatch = useDispatch();
-  // const active = useSelector((state: RootState) => state.cards.active);
-  // const activated = useSelector((state: RootState) => state.cards.activated);
+  const preload = useSelector((state: RootState) => state.cards.preload);
+  const paused = useSelector((state: RootState) => state.timer.paused);
+  const active_card = useSelector(
+    (state: RootState) => state.cards.active_card
+  );
+  const open_cards = useSelector((state: RootState) => state.cards.open_cards);
   let style = {};
-  //if (active === props.index || activated[props.index]) {
-  //  style = styleFlip;
-  // }
-  //function onClick(index: number) {
-  //   dispatch(flip(index));
-  // }
+  if (preload || active_card === props.index || open_cards[props.index]) {
+    style = styleFlip;
+  }
+  function onClick(index: number) {
+    dispatch(cardsFlip(index));
+  }
 
   return (
     <div style={styleScene}>
       <div
         style={{ ...styleCard, ...style }}
         data-index={props.index}
-        // onClick={() => onClick(props.index)}
+        data-testid={"card_" + props.index}
+        onClick={() => !paused && onClick(props.index)}
       >
         <div style={{ ...styleFace }} />
         <div style={{ ...styleFace, ...styleFaceBack }}>{props.value}</div>

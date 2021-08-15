@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/store/reducers";
 
 const initialState = {
@@ -10,21 +10,21 @@ const timerSlice = createSlice({
   name: "timer",
   initialState,
   reducers: {
-    timerStartCountdown: function (state, action: PayloadAction<number>) {
+    timerStartCountdown: function (state, action) {
+      return {
+        ...state,
+        time: action.payload,
+        paused: true,
+      };
+    },
+    timerStart: function (state, action) {
       return {
         ...state,
         time: action.payload,
         paused: false,
       };
     },
-    timerStart: function (state, action: PayloadAction<number>) {
-      return {
-        ...state,
-        time: action.payload,
-        paused: false,
-      };
-    },
-    timerUpdate: function (state, action: PayloadAction<number>) {
+    timerUpdate: function (state, action) {
       return {
         ...state,
         time: action.payload,

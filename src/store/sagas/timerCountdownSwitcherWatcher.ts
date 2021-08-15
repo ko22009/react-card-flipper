@@ -18,8 +18,6 @@ export default function* timerCountdownSwitcherWatcher() {
       yield put(timerStart(1));
       return;
     }
-    const paused: boolean = yield select(getPaused);
-    if (paused) return;
     if (type === timerStart.type) {
       yield put(timerOverCountdown());
     } else {
