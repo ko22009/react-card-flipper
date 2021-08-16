@@ -7,13 +7,15 @@ export interface ICard {
   value: string | number;
 }
 
+export const COUNT_PAIRS = 4;
+
 const initialState: {
   cards: ICard[];
   open_cards: Record<number, boolean>;
   active_card: number;
   preload: boolean;
 } = {
-  cards: generateRange(1, 36),
+  cards: generateRange(1, COUNT_PAIRS * COUNT_PAIRS),
   open_cards: {},
   active_card: -1,
   preload: false,

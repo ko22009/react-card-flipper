@@ -2,11 +2,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/reducers";
 import Card from "@/components/Card";
 import React from "react";
+import { COUNT_PAIRS } from "@/store/reducers/cards";
 
 const styleBoard = {
   display: "grid",
-  gridTemplateColumns: "repeat(6, 100px)",
-  gridTemplateRows: "repeat(6, 100px)",
+  gridTemplateColumns: `repeat(${COUNT_PAIRS}, 100px)`,
+  gridTemplateRows: `repeat(${COUNT_PAIRS}, 100px)`,
   columnGap: "15px",
   rowGap: "15px",
 };

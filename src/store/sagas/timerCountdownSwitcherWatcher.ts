@@ -1,6 +1,5 @@
-import { put, take, select } from "redux-saga/effects";
+import { put, take } from "redux-saga/effects";
 import {
-  getPaused,
   timerOver,
   timerOverCountdown,
   timerStart,
@@ -16,9 +15,7 @@ export default function* timerCountdownSwitcherWatcher() {
     ]);
     if (type === timerOverCountdown.type) {
       yield put(timerStart(1));
-      return;
-    }
-    if (type === timerStart.type) {
+    } else if (type === timerStart.type) {
       yield put(timerOverCountdown());
     } else {
       yield put(timerOver());
