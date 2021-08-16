@@ -1,16 +1,23 @@
-import { render, fireEvent, act, cleanup } from "@testing-library/react";
+import {
+  render,
+  fireEvent,
+  act,
+  waitFor,
+  screen,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import React from "react";
 import Game from "./Game";
 import { Provider } from "react-redux";
 import { store, sagaMiddleware } from "@/store";
 import { configureStore } from "@reduxjs/toolkit";
 import { rootSaga } from "@/store/sagas";
+import { TIME_OVER_COUNTDOWN } from "@/store/reducers/timer";
 
 let appStore = configureStore(store);
 sagaMiddleware.run(rootSaga);
 
 afterEach(() => {
-  cleanup();
   appStore = configureStore(store);
   sagaMiddleware.run(rootSaga);
 });
@@ -29,21 +36,27 @@ describe("card", () => {
 
   test("can flip card after 5 seconds after start countdown", async () => {
     jest.useFakeTimers();
-    const { findByTestId } = render(
+    render(
       <Provider store={appStore}>
         <Game />
       </Provider>
     );
-    const startBtn = await findByTestId("start");
+    const startBtn = await screen.findByTestId("start");
     fireEvent.click(startBtn);
 
     expect(appStore.getState().cards.active_card).toBe(-1);
 
-    act(() => {
-      jest.advanceTimersByTime(6000);
-    });
+    await waitFor(
+      async () => {
+        const time = await screen.findByText("00:00");
+        expect(time).toBeInTheDocument();
+      },
+      { timeout: TIME_OVER_COUNTDOWN }
+    );
 
-    const btn = await findByTestId("card_1");
+    await waitForElementToBeRemoved(() => screen.queryByText("00:00"));
+
+    const btn = await screen.findByTestId("card_1");
     fireEvent.click(btn);
 
     expect(appStore.getState().cards.active_card).toBe(1);

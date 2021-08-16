@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/store/reducers";
 
+export const TIME_COUNTDOWN = 5;
+export const TIME_OVER_COUNTDOWN = TIME_COUNTDOWN * 1000 + 1000;
+
 const initialState = {
   time: 0,
   paused: true,

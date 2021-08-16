@@ -5,6 +5,7 @@ import {
   getTime,
   timerStartCountdown,
   getPaused,
+  TIME_COUNTDOWN,
 } from "@/store/reducers/timer";
 import Board from "@/components/Board";
 import Timer from "@/components/Timer";
@@ -33,7 +34,7 @@ function Game() {
         <button
           data-testid="start"
           onClick={() => {
-            dispatch(timerStartCountdown(5));
+            dispatch(timerStartCountdown(TIME_COUNTDOWN));
           }}
         >
           {paused ? "Start" : "New game"}

@@ -2,7 +2,6 @@ import { eventChannel, SagaIterator } from "redux-saga";
 import { call, cancel, cancelled, fork, put, take } from "redux-saga/effects";
 import {
   timerOver,
-  timerOverCountdown,
   timerPause,
   timerStart,
   timerUpdate,
