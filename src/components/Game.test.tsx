@@ -22,8 +22,31 @@ afterEach(() => {
   sagaMiddleware.run(rootSaga);
 });
 
+async function gameStarted() {
+  jest.useFakeTimers();
+  render(
+    <Provider store={appStore}>
+      <Game />
+    </Provider>
+  );
+  const startBtn = await screen.findByTestId("start");
+  fireEvent.click(startBtn);
+
+  expect(appStore.getState().cards.active_card).toBe(-1);
+
+  await waitFor(
+    async () => {
+      const time = await screen.findByText("00:00");
+      expect(time).toBeInTheDocument();
+    },
+    { timeout: TIME_OVER_COUNTDOWN }
+  );
+
+  await waitForElementToBeRemoved(() => screen.queryByText("00:00"));
+}
+
 describe("card", () => {
-  test("cannot flip card before start timer", async () => {
+  test("cannot flip card before start game", async () => {
     const { findByTestId } = render(
       <Provider store={appStore}>
         <Game />
@@ -34,27 +57,8 @@ describe("card", () => {
     expect(appStore.getState().cards.active_card).toBe(-1);
   });
 
-  test("can flip card after 5 seconds after start countdown", async () => {
-    jest.useFakeTimers();
-    render(
-      <Provider store={appStore}>
-        <Game />
-      </Provider>
-    );
-    const startBtn = await screen.findByTestId("start");
-    fireEvent.click(startBtn);
-
-    expect(appStore.getState().cards.active_card).toBe(-1);
-
-    await waitFor(
-      async () => {
-        const time = await screen.findByText("00:00");
-        expect(time).toBeInTheDocument();
-      },
-      { timeout: TIME_OVER_COUNTDOWN }
-    );
-
-    await waitForElementToBeRemoved(() => screen.queryByText("00:00"));
+  test("can flip card after timer is gone", async () => {
+    await gameStarted();
 
     const btn = await screen.findByTestId("card_1");
     fireEvent.click(btn);
@@ -63,43 +67,21 @@ describe("card", () => {
   });
 
   test("cannot flip when paused", async () => {
-    jest.useFakeTimers();
-    const { findByTestId, findByText } = render(
-      <Provider store={appStore}>
-        <Game />
-      </Provider>
-    );
-    const startBtn = await findByTestId("start");
-    fireEvent.click(startBtn);
+    await gameStarted();
 
-    act(() => {
-      jest.advanceTimersByTime(6000);
-    });
-
-    const btn = await findByText("Pause");
+    const btn = await screen.findByText("Pause");
     fireEvent.click(btn);
 
-    const card1 = await findByTestId("card_1");
+    const card1 = await screen.findByTestId("card_1");
     fireEvent.click(card1);
 
     expect(appStore.getState().cards.active_card).toBe(-1);
   });
 
-  test("resume game", async () => {
-    jest.useFakeTimers();
-    const { findByTestId, findByText } = render(
-      <Provider store={appStore}>
-        <Game />
-      </Provider>
-    );
-    const startBtn = await findByTestId("start");
-    fireEvent.click(startBtn);
+  test("pause timer", async () => {
+    await gameStarted();
 
-    act(() => {
-      jest.advanceTimersByTime(6000);
-    });
-
-    const pauseBtn = await findByText("Pause");
+    const pauseBtn = await screen.findByText("Pause");
     fireEvent.click(pauseBtn);
 
     const time = appStore.getState().timer.time;
@@ -111,8 +93,17 @@ describe("card", () => {
     const timeLaterBeforeResume = appStore.getState().timer.time;
 
     expect(timeLaterBeforeResume).toBe(time);
+  });
 
-    const btnResume = await findByText("Resume");
+  test("pause and resume timer", async () => {
+    await gameStarted();
+
+    const time = appStore.getState().timer.time;
+
+    const pauseBtn = await screen.findByText("Pause");
+    fireEvent.click(pauseBtn);
+
+    const btnResume = await screen.findByText("Resume");
     fireEvent.click(btnResume);
 
     act(() => {
