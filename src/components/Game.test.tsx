@@ -9,30 +9,20 @@ import {
 import React from "react";
 import Game from "./Game";
 import { Provider } from "react-redux";
-import { store, sagaMiddleware } from "@/store";
-import { configureStore } from "@reduxjs/toolkit";
-import { rootSaga } from "@/store/sagas";
+import { store } from "@/store";
 import { TIME_OVER_COUNTDOWN } from "@/store/reducers/timer";
-
-let appStore = configureStore(store);
-sagaMiddleware.run(rootSaga);
-
-afterEach(() => {
-  appStore = configureStore(store);
-  sagaMiddleware.run(rootSaga);
-});
 
 async function gameStarted() {
   jest.useFakeTimers();
   render(
-    <Provider store={appStore}>
+    <Provider store={store}>
       <Game />
     </Provider>
   );
   const startBtn = await screen.findByTestId("start");
   fireEvent.click(startBtn);
 
-  expect(appStore.getState().cards.active_card).toBe(-1);
+  expect(store.getState().cards.active_card).toBe(-1);
 
   await waitFor(
     async () => {
@@ -48,13 +38,13 @@ async function gameStarted() {
 describe("card", () => {
   test("cannot flip card before start game", async () => {
     const { findByTestId } = render(
-      <Provider store={appStore}>
+      <Provider store={store}>
         <Game />
       </Provider>
     );
     const btn = await findByTestId("card_1");
     fireEvent.click(btn);
-    expect(appStore.getState().cards.active_card).toBe(-1);
+    expect(store.getState().cards.active_card).toBe(-1);
   });
 
   test("can flip card after timer is gone", async () => {
@@ -63,7 +53,7 @@ describe("card", () => {
     const btn = await screen.findByTestId("card_1");
     fireEvent.click(btn);
 
-    expect(appStore.getState().cards.active_card).toBe(1);
+    expect(store.getState().cards.active_card).toBe(1);
   });
 
   test("cannot flip when paused", async () => {
@@ -75,7 +65,7 @@ describe("card", () => {
     const card1 = await screen.findByTestId("card_1");
     fireEvent.click(card1);
 
-    expect(appStore.getState().cards.active_card).toBe(-1);
+    expect(store.getState().cards.active_card).toBe(-1);
   });
 
   test("pause timer", async () => {
@@ -84,13 +74,13 @@ describe("card", () => {
     const pauseBtn = await screen.findByText("Pause");
     fireEvent.click(pauseBtn);
 
-    const time = appStore.getState().timer.time;
+    const time = store.getState().timer.time;
 
     act(() => {
       jest.advanceTimersByTime(1000);
     });
 
-    const timeLaterBeforeResume = appStore.getState().timer.time;
+    const timeLaterBeforeResume = store.getState().timer.time;
 
     expect(timeLaterBeforeResume).toBe(time);
   });
@@ -98,7 +88,7 @@ describe("card", () => {
   test("pause and resume timer", async () => {
     await gameStarted();
 
-    const time = appStore.getState().timer.time;
+    const time = store.getState().timer.time;
 
     const pauseBtn = await screen.findByText("Pause");
     fireEvent.click(pauseBtn);
@@ -110,7 +100,7 @@ describe("card", () => {
       jest.advanceTimersByTime(1000);
     });
 
-    const timeLater = appStore.getState().timer.time;
+    const timeLater = store.getState().timer.time;
 
     expect(timeLater).not.toBe(time);
   });
