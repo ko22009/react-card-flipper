@@ -52,7 +52,7 @@ export default function* cardsWatcher() {
         yield put(timerOver());
         const time: number = yield select(getTime);
         const score: number = yield select(getScore);
-        if (time < score) {
+        if (time < score || score === 0) {
           localStorage.setItem("record", time.toString());
           yield put(scoreSet(time));
         }
