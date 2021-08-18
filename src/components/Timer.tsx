@@ -1,8 +1,19 @@
 import { useSelector } from "react-redux";
-import { RootState } from "@/store/reducers";
 import React from "react";
+import { getTime } from "@/store/reducers/timer";
 
-function formatTime(second: number): string {
+const style = {
+  border: "1px solid black",
+  marginBottom: "5px",
+  borderRadius: "3px",
+  width: "60px",
+  height: "25px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+export function formatTime(second: number): string {
   const hours = Math.floor(second / 60);
   return (
     hours.toFixed().padStart(2, "0") +
@@ -12,8 +23,8 @@ function formatTime(second: number): string {
 }
 
 function Timer() {
-  const time = useSelector((state: RootState) => state.timer.time);
-  return <div>{formatTime(time)}</div>;
+  const time = useSelector(getTime);
+  return <div style={style}>{formatTime(time)}</div>;
 }
 
 export default Timer;

@@ -2,16 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import App from "./App";
-import { configureStore } from "@reduxjs/toolkit";
-import { sagaMiddleware, store } from "./store";
-import { rootSaga } from "@/store/sagas";
-
-const appStore = configureStore(store);
-sagaMiddleware.run(rootSaga);
+import { store } from "./store";
+import "./reset.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={appStore}>
+    <Provider store={store}>
       <App />
     </Provider>
   </React.StrictMode>,

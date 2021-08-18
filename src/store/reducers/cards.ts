@@ -74,9 +74,11 @@ const cardsSlice = createSlice({
   },
 });
 
+export const getPreload = (state: RootState) => state.cards.preload;
 export const getCards = (state: RootState) => state.cards.cards;
 export const getActiveCard = (state: RootState) => state.cards.active_card;
 export const getOpenedCards = (state: RootState) => state.cards.open_cards;
+
 export const {
   cardsGenerate,
   cardsPlay,

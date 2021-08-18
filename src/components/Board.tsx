@@ -1,8 +1,7 @@
 import { useSelector } from "react-redux";
-import { RootState } from "@/store/reducers";
 import Card from "@/components/Card";
 import React from "react";
-import { COUNT_PAIRS } from "@/store/reducers/cards";
+import { COUNT_PAIRS, getCards } from "@/store/reducers/cards";
 
 const styleBoard = {
   display: "grid",
@@ -10,10 +9,11 @@ const styleBoard = {
   gridTemplateRows: `repeat(${COUNT_PAIRS}, 100px)`,
   columnGap: "15px",
   rowGap: "15px",
+  marginLeft: "auto",
 };
 
 function Board() {
-  const { cards } = useSelector((state: RootState) => state.cards);
+  const cards = useSelector(getCards);
   return (
     <div style={styleBoard}>
       {cards.map((card, i) => (

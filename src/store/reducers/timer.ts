@@ -42,7 +42,6 @@ const timerSlice = createSlice({
     timerOverCountdown: function (state) {
       return {
         ...state,
-        paused: true,
       };
     },
     timerOver: function (state) {

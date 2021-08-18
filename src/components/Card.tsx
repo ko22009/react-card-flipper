@@ -1,8 +1,14 @@
 import { CSSProperties } from "react";
-import { cardsFlip, ICard } from "@/store/reducers/cards";
+import {
+  cardsFlip,
+  getActiveCard,
+  getOpenedCards,
+  getPreload,
+  ICard,
+} from "@/store/reducers/cards";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
-import { RootState } from "@/store/reducers";
+import { getPaused } from "@/store/reducers/timer";
 
 const styleCard = {
   background: "#272773",
@@ -39,12 +45,10 @@ const styleFlip = {
 
 function Card(props: ICard) {
   const dispatch = useDispatch();
-  const preload = useSelector((state: RootState) => state.cards.preload);
-  const paused = useSelector((state: RootState) => state.timer.paused);
-  const active_card = useSelector(
-    (state: RootState) => state.cards.active_card
-  );
-  const open_cards = useSelector((state: RootState) => state.cards.open_cards);
+  const preload = useSelector(getPreload);
+  const paused = useSelector(getPaused);
+  const active_card = useSelector(getActiveCard);
+  const open_cards = useSelector(getOpenedCards);
   let style = {};
   if (preload || active_card === props.index || open_cards[props.index]) {
     style = styleFlip;

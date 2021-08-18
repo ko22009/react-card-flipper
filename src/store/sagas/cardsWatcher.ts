@@ -5,17 +5,21 @@ import {
   cardsFlipAfter,
   cardsGenerate,
   cardsMatch,
-  cardsPlay, COUNT_PAIRS,
+  cardsPlay,
+  COUNT_PAIRS,
   getActiveCard,
-  getCards, getOpenedCards,
+  getCards,
+  getOpenedCards,
   ICard,
-} from '../reducers/cards';
+} from "../reducers/cards";
 import {
+  getTime,
   timerOver,
   timerOverCountdown,
   timerStartCountdown,
 } from "@/store/reducers/timer";
 import shuffleArray from "@/utils/shuffleArray";
+import { getScore, scoreSet } from "@/store/reducers/score";
 
 export default function* cardsWatcher() {
   while (true) {
@@ -46,6 +50,12 @@ export default function* cardsWatcher() {
       if (Object.keys(openedCards).length === COUNT_PAIRS * COUNT_PAIRS) {
         yield put(cardsFinish());
         yield put(timerOver());
+        const time: number = yield select(getTime);
+        const score: number = yield select(getScore);
+        if (time < score) {
+          localStorage.setItem("record", time.toString());
+          yield put(scoreSet(time));
+        }
       }
     }
   }

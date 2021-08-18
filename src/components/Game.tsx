@@ -8,11 +8,21 @@ import {
   TIME_COUNTDOWN,
 } from "@/store/reducers/timer";
 import Board from "@/components/Board";
-import Timer from "@/components/Timer";
-import React from "react";
+import Timer, { formatTime } from "@/components/Timer";
+import React, { CSSProperties } from "react";
+import { getScore } from "@/store/reducers/score";
+
+const bestScoreStyle = {
+  border: "1px solid",
+  borderRadius: "2px",
+  padding: "5px 10px",
+  marginBottom: "5px",
+  display: "inline-flex",
+};
 
 function BestScore() {
-  return <span>Ваш рекорд: 0</span>;
+  const score = useSelector(getScore);
+  return <div style={bestScoreStyle}>Ваш рекорд: {formatTime(score)}</div>;
 }
 
 const rootStyle = {
@@ -21,47 +31,57 @@ const rootStyle = {
   columnGap: "30px",
 };
 
+const headerStyle: CSSProperties = {
+  textAlign: "center",
+  background: "rgb(41 41 66)",
+  color: "#fff",
+  padding: "10px",
+  marginBottom: "15px",
+};
+
 function Game() {
   const dispatch = useDispatch();
-  const paused = useSelector(getPaused);
   const time = useSelector(getTime);
+  const paused = useSelector(getPaused);
+  const btnPause = (
+    <button
+      onClick={() => {
+        dispatch(timerPause());
+      }}
+    >
+      ⏸️
+    </button>
+  );
+  const btnResume = (
+    <button
+      onClick={() => {
+        dispatch(timerStart(time));
+      }}
+    >
+      ▶️
+    </button>
+  );
   return (
-    <div style={rootStyle}>
-      <Board />
-      <div>
-        <Timer />
-        <BestScore />
-        <button
-          data-testid="start"
-          onClick={() => {
-            dispatch(timerStartCountdown(TIME_COUNTDOWN));
-          }}
-        >
-          {paused ? "Start" : "New game"}
-        </button>
-        <button
-          onClick={() => {
-            dispatch(timerPause());
-          }}
-        >
-          Pause
-        </button>
-        <button
-          onClick={() => {
-            dispatch(timerStart(time));
-          }}
-        >
-          Resume
-        </button>
-        <button
-          onClick={() => {
-            dispatch(timerStart(0));
-          }}
-        >
-          Start timer
-        </button>
+    <>
+      <header style={headerStyle}>Card flipper</header>
+      <div style={rootStyle}>
+        <Board />
+        <div>
+          <Timer />
+          <BestScore />
+          <br />
+          <button
+            data-testid="start"
+            onClick={() => {
+              dispatch(timerStartCountdown(TIME_COUNTDOWN));
+            }}
+          >
+            🔄️
+          </button>{" "}
+          {paused ? btnResume : btnPause}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
