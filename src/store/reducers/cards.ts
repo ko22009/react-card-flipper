@@ -42,6 +42,13 @@ const cardsSlice = createSlice({
         active_card: -1,
       };
     },
+    cardsFinish: function (state) {
+      return {
+        ...state,
+        preload: false,
+        active_card: -1,
+      };
+    },
     cardsMatch: function (state, action) {
       return {
         ...state,
@@ -69,9 +76,11 @@ const cardsSlice = createSlice({
 
 export const getCards = (state: RootState) => state.cards.cards;
 export const getActiveCard = (state: RootState) => state.cards.active_card;
+export const getOpenedCards = (state: RootState) => state.cards.open_cards;
 export const {
   cardsGenerate,
   cardsPlay,
+  cardsFinish,
   cardsFlip,
   cardsMatch,
   cardsFlipAfter,

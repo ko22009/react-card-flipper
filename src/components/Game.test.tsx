@@ -37,12 +37,12 @@ async function gameStarted() {
 
 describe("card", () => {
   test("cannot flip card before start game", async () => {
-    const { findByTestId } = render(
+    render(
       <Provider store={store}>
         <Game />
       </Provider>
     );
-    const btn = await findByTestId("card_1");
+    const btn = await screen.findByTestId("card_1");
     fireEvent.click(btn);
     expect(store.getState().cards.active_card).toBe(-1);
   });

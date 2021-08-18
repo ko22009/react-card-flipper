@@ -1,15 +1,17 @@
 import { call, put, select, take } from "redux-saga/effects";
 import {
+  cardsFinish,
   cardsFlip,
   cardsFlipAfter,
   cardsGenerate,
   cardsMatch,
-  cardsPlay,
+  cardsPlay, COUNT_PAIRS,
   getActiveCard,
-  getCards,
+  getCards, getOpenedCards,
   ICard,
-} from "../reducers/cards";
+} from '../reducers/cards';
 import {
+  timerOver,
   timerOverCountdown,
   timerStartCountdown,
 } from "@/store/reducers/timer";
@@ -40,6 +42,11 @@ export default function* cardsWatcher() {
         yield put(cardsMatch(payload));
       }
       yield put(cardsFlipAfter(payload));
+      const openedCards: {} = yield select(getOpenedCards);
+      if (Object.keys(openedCards).length === COUNT_PAIRS * COUNT_PAIRS) {
+        yield put(cardsFinish());
+        yield put(timerOver());
+      }
     }
   }
 }
